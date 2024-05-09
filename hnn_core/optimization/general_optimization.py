@@ -13,7 +13,7 @@ from .objective_functions import _rmse_evoked
 class Optimizer:
     def __init__(self, initial_net, tstop, constraints, set_params,
                  solver='cobyla', obj_fun='dipole_rmse', scale_factor=1.,
-                 smooth_window_len=None, max_iter=200):
+                 smooth_window_len=None, pass_band=None, max_iter=200):
         """Parameter optimization.
 
         Parameters
@@ -39,9 +39,12 @@ class Optimizer:
             The dipole scale factor. The default is 1.
         smooth_window_len : float, optional
             The smooth window length. The default is None.
+        pass_band : (low, high) tuple
+            Alternative to smoothing
         max_iter : int, optional
             The max number of calls to the objective function. The default is
             200.
+
 
         Attributes
         ----------
@@ -93,6 +96,7 @@ class Optimizer:
             raise ValueError("obj_fun must be 'dipole_rmse'")
         self.scale_factor = scale_factor
         self.smooth_window_len = smooth_window_len
+        self.pass_band = pass_band
         self.tstop = tstop
         self.net_ = None
         self.obj_ = list()
@@ -127,7 +131,8 @@ class Optimizer:
                                               self.max_iter,
                                               target,
                                               self.scale_factor,
-                                              self.smooth_window_len)
+                                              self.smooth_window_len,
+                                              self.pass_band)
 
         self.net_ = net_
         self.obj_ = obj
@@ -263,7 +268,7 @@ def _update_params(initial_params, predicted_params):
 
 def _run_opt_bayesian(initial_net, tstop, constraints, set_params, obj_fun,
                       initial_params, max_iter, target, scale_factor=1.,
-                      smooth_window_len=None):
+                      smooth_window_len=None, pass_band = None):
     """Runs optimization routine with gp_minimize optimizer.
 
     Parameters
@@ -312,6 +317,7 @@ def _run_opt_bayesian(initial_net, tstop, constraints, set_params, obj_fun,
                        obj_values,
                        scale_factor,
                        smooth_window_len,
+                       pass_band,
                        target,
                        tstop)
 
@@ -337,7 +343,7 @@ def _run_opt_bayesian(initial_net, tstop, constraints, set_params, obj_fun,
 
 def _run_opt_cobyla(initial_net, tstop, constraints, set_params, obj_fun,
                     initial_params, max_iter, target, scale_factor=1.,
-                    smooth_window_len=None):
+                    smooth_window_len=None, pass_band=None):
     """Runs optimization routine with fmin_cobyla optimizer.
 
     Parameters
@@ -386,6 +392,7 @@ def _run_opt_cobyla(initial_net, tstop, constraints, set_params, obj_fun,
                        obj_values,
                        scale_factor,
                        smooth_window_len,
+                       pass_band,
                        target,
                        tstop)
 

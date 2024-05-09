@@ -221,7 +221,7 @@ def plot_laminar_lfp(times, data, contact_labels, tmin=None, tmax=None,
 
 
 def plot_dipole(dpl, tmin=None, tmax=None, ax=None, layer='agg', decim=None,
-                color='k', label="average", average=False, show=True):
+                color='k', label="average", average=False, show=True, linestyle='-'):
     """Simple layer-specific plot function.
 
     Parameters
@@ -256,6 +256,7 @@ def plot_dipole(dpl, tmin=None, tmax=None, ax=None, layer='agg', decim=None,
     fig : instance of plt.fig
         The matplotlib figure handle.
     """
+
     import matplotlib.pyplot as plt
     from .dipole import Dipole, average_dipoles
 
@@ -295,11 +296,11 @@ def plot_dipole(dpl, tmin=None, tmax=None, ax=None, layer='agg', decim=None,
                     data, times = _decimate_plot_data(decim, data, times)
                 if idx == len(dpl) - 1 and average:
                     # the average dpl
-                    ax.plot(times, data, color=color, label=label, lw=1.5)
+                    ax.plot(times, data, color=color, label=label, lw=1.5, linestyle=linestyle)
                 else:
                     alpha = 0.5 if average else 1.
                     ax.plot(times, data, color=_lighten_color(color, 0.5),
-                            alpha=alpha, lw=1.)
+                            alpha=alpha, lw=1., linestyle=linestyle)
 
         if average:
             ax.legend()

@@ -431,6 +431,30 @@ class Dipole(object):
 
         return self
 
+    def band_pass(self, pass_band):
+        """
+        Alternative to smoothing
+        """
+        from scipy.signal import butter, lfilter
+
+        def butter_bandpass(lowcut, highcut, fs, order=2):
+            if(lowcut == 0):
+                return butter(order, highcut, fs=fs, btype='low')
+            return butter(order, [lowcut, highcut], fs=fs, btype='band')
+
+        def butter_bandpass_filter(data, lowcut, highcut, fs, order=2):
+            b, a = butter_bandpass(lowcut, highcut, fs, order=order)
+            y = lfilter(b, a, data)
+            return y
+
+        lowcut = pass_band[0]
+        highcut = pass_band[1]
+
+        for key in self.data.keys():
+            self.data[key] = butter_bandpass_filter(self.data[key], lowcut, highcut, self.sfreq)
+
+        return self
+
     def savgol_filter(self, h_freq):
         """Smooth the dipole waveform using Savitzky-Golay filtering
 
@@ -468,7 +492,7 @@ class Dipole(object):
         return self
 
     def plot(self, tmin=None, tmax=None, layer='agg', decim=None, ax=None,
-             color='k', show=True):
+             color='k', show=True, linestyle='-'):
         """Simple layer-specific plot function.
 
         Parameters
@@ -494,7 +518,7 @@ class Dipole(object):
             The matplotlib figure handle.
         """
         return plot_dipole(self, tmin=tmin, tmax=tmax, ax=ax, layer=layer,
-                           decim=decim, color=color, show=show)
+                           decim=decim, color=color, show=show, linestyle=linestyle)
 
     def plot_psd(self, fmin=0, fmax=None, tmin=None, tmax=None, layer='agg',
                  color=None, label=None, ax=None, show=True):

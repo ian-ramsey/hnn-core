@@ -47,7 +47,6 @@ def _simulate_single_trial(net, tstop, dt, trial_idx):
     h.load_file("stdrun.hoc")
 
     rank = _get_rank()
-
     # Now let's simulate the dipole
 
     _PC.barrier()  # sync for output to screen
@@ -155,6 +154,7 @@ def load_custom_mechanisms():
             if filename.endswith(('.so', '.dll')):
                 mech_fname.append(os.path.join(root, filename))
                 break
+
 
     if len(mech_fname) == 0:
         raise FileNotFoundError(f'No .so or .dll file found in {mod_dir}')

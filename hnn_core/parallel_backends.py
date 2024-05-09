@@ -230,6 +230,8 @@ def run_subprocess(command, obj, timeout, proc_queue=None, *args, **kwargs):
 
     if not proc.returncode == 0:
         # simulation failed with a numeric return code
+        from mpi4py import MPI
+        print(MPI.Get_error_string(proc.returncode))
         raise RuntimeError("MPI simulation failed. Return code: %d" %
                            proc.returncode)
 
@@ -714,8 +716,15 @@ class MPIBackend(object):
 
         env = _get_mpi_env()
 
+        #debugging
+        # print("\n\n")
+        # print(self.mpi_cmd)
+        # print(os.getcwd())
+        # print("\n\n")
+
+        #note, olde timeout was 30
         self.proc, sim_data = run_subprocess(
-            command=self.mpi_cmd, obj=[net, tstop, dt, n_trials], timeout=30,
+            command=self.mpi_cmd, obj=[net, tstop, dt, n_trials], timeout=300,
             proc_queue=self.proc_queue, env=env, cwd=os.getcwd(),
             universal_newlines=True)
 

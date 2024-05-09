@@ -11,7 +11,7 @@ from ..dipole import _rmse
 
 def _rmse_evoked(initial_net, initial_params, set_params, predicted_params,
                  update_params, obj_values, scale_factor, smooth_window_len,
-                 target, tstop):
+                 pass_band, target, tstop):
     """The objective function for evoked responses.
 
     Parameters
@@ -34,7 +34,8 @@ def _rmse_evoked(initial_net, initial_params, set_params, predicted_params,
         The simulated dipole's duration.
     target : instance of Dipole
         A dipole object with experimental data.
-
+    pass_band : (low, high) tuple
+        alternative to smoothing.
     Returns
     -------
     obj : float
@@ -46,12 +47,17 @@ def _rmse_evoked(initial_net, initial_params, set_params, predicted_params,
     # simulate dpl with predicted params
     new_net = initial_net.copy()
     set_params(new_net, params)
+
+    # print(tstop) #debugging
+
     dpl = simulate_dipole(new_net, tstop=tstop, n_trials=1)[0]
 
     # smooth & scale
     dpl.scale(scale_factor)
     if smooth_window_len is not None:
         dpl.smooth(smooth_window_len)
+    elif pass_band is not None:
+        dpl.band_pass(pass_band)
 
     obj = _rmse(dpl, target, tstop=tstop)
 

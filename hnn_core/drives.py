@@ -409,6 +409,9 @@ def _create_bursty_input(*, t0, t0_stdev, tstop, f_input,
     event_times : array
         The event times.
     """
+
+    # print(f"{t0}, {t0_stdev}, {tstop}, {f_input}, {events_jitter_std}")
+
     if t0_stdev > 0.0:
         t0 = prng2.normal(t0, t0_stdev)
 

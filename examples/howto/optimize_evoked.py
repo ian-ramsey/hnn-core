@@ -19,6 +19,9 @@ import matplotlib.pyplot as plt
 ###############################################################################
 # Let us import hnn_core
 
+import sys
+print(sys.path)
+
 import hnn_core
 from hnn_core import (MPIBackend, jones_2009_model, simulate_dipole,
                       read_dipole)

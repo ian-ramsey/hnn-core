@@ -89,7 +89,11 @@ class MPISimulation(object):
         else:
             net = None
 
+
+        sys.stdout.flush()
+        sys.stderr.flush()
         net = self.comm.bcast(net, root=0)
+
         return net
 
     def _wait_for_exit_signal(self):
